@@ -18,63 +18,85 @@ module.exports = function processArgs(find) {
   }
 
   var parameters = {};
-  var groups = [];
+  var commands = [];
   var cmd;
 
   args.forEach(function(arg){
     // command
     if(arg.indexOf('-') !== 0) {
       cmd = fs.existsSync(arg) ? path.basename(arg) : arg;
+      commands.push(cmd);
       parameters[cmd] = {};
     }
     // parameters
-    else if(cmd) {
-      // more than 3 dash line, no use do nothing
-      if(arg.indexOf('---') === 0) {}
+    else if(cmd && typeof parameters[cmd] === 'object') {
+      var obj = parameters[cmd];
+      // more than 4 dash line, no use do nothing
+      if(arg.indexOf('----') === 0) {
+        return true;
+      }
+      // 3 dash line, super param
+      else if(arg.indexOf('---') === 0) {
+        arg = arg.substr(3);
+        paserEach(parameters,arg,commands);
+      }
       // 2 dash line
       else if(arg.indexOf('--') === 0) {
         arg = arg.substr(2);
-        var pos = arg.indexOf("=");
-        // with no =
-        if(pos === -1) {
-          typeof parameters[cmd] === 'object' && add.call(parameters[cmd],arg,true);
-        }
-        // begin with =, do nothing
-        else if(pos === 0) {}
-        // like key=value
-        else {
-
-          var key = arg.substr(0, pos);
-          var value = arg.substr(pos + 1);
-          typeof parameters[cmd] === 'object' && add.call(parameters[cmd],key,value);
-        }
+        paserTo(obj,arg);
       }
       // 1 dash line
       else {
         arg = arg.substr(1);
-        typeof parameters[cmd] === 'object' && add.call(parameters[cmd],arg,true);
+        paserTo(obj,arg);
       }
     }
   });
 
-  function add(key, value) {
-    var prev = this[key];
-    if (prev instanceof Array) {
-      prev.push(value);
-    } else if ("undefined" !== typeof prev) {
-      this[key] = [prev, value];
-    } else {
-      this[key] = value;
+  function paserEach(obj,str,props) {
+    props.forEach(function(prop){
+        paserTo(obj[prop],str);
+    });
+  }
+
+  function paserTo(obj,str) {
+    var pos = str.indexOf("=");
+    // with no =
+    if(pos === -1) {
+      set(obj,str,true,true);
+    }
+    // begin with =, do nothing
+    else if(pos === 0) {}
+    // like key=value
+    else {
+      var key = str.substr(0, pos);
+      var value = str.substr(pos + 1);
+      set(obj,key,value);
+    }
+  }
+
+  function set(obj,key,value,cover) {
+    // cover previous value
+    if(cover) {
+      obj[key] = value;
+      reutrn;
     }
 
-    if(groups.indexOf(this) === -1) {
-      groups.push(this);
+    var prev = obj[key];
+    if (prev instanceof Array) {
+      prev.push(value);
+    } 
+    else if ("undefined" !== typeof prev) {
+      obj[key] = [prev, value];
+    } 
+    else {
+      obj[key] = value;
     }
   }
 
   if(find) {
-    if(typeof find === 'boolean' && find === true && groups.length > 0) {
-      return groups[0];
+    if(typeof find === 'boolean' && find === true && commands.length > 0) {
+      return parameters[commands[0]];
     }
     else if(parameters[find]) {
       return parameters[find];

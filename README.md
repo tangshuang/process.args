@@ -44,13 +44,32 @@ In my opinion, `-` stands for short, so what follows `-` should be a shortname, 
 
 This is the reason why I use this appearance.
 
+In process.args:
+
+* `-` short alias: e.g. `-v` `-h` `-g`
+* `--` key=value pairs: e.g. `--name="Nick"` `--host="192.168.0.1"`
+* `---` super param: e.g. `---v` means all before this command will be set `-v`, `---name="Park"` means all before this will be set `--name="Park"`
+
+```
+gulp build --path="./js" preview -b ---without-feedback go --link="http://www.google.com"
+```
+Let's look at `---without-feedback`. This means, `build` and `preview` task will both be set `-without-feedback`, go will not be set bcause of position behind.
+
+If you set a key twice, the value will be a array.
+
+```
+gulp build --path="./js" --path="./css"
+```
+
+Then `path` will be a array.
+
 ## Convention
 
 * only `[a-zA-Z0-9]` and `_` could be used for parameter key name.
 * the first letter of key name should be character.
 * no blank could be use in value, you can use quota for more than one word, for example: --place="Shenzhen China"
 * without `-` at the beginning of a word, it will be considered as a task or command, not a parameter.
-* more than two `-` at the beginning of a word makes this part no use doing nothing, for example: ---link="http://github.com", this will be abandoned.
+* more than three `-` at the beginning of a word makes this part no use doing nothing, for example: ----link="http://github.com", this will be abandoned.
 
 ## Usage in .js
 
