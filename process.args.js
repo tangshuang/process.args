@@ -9,7 +9,7 @@
 
 var fs = require('fs');
 
-export default function processArgs(find,alias) {
+module.exports = function processArgs(find,alias) {
   var args = process.argv;
 
   // if there are no parameters
@@ -116,4 +116,3 @@ export default function processArgs(find,alias) {
   return parameters;
 }
 
-module.exports = processArgs;
