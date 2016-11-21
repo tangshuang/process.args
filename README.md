@@ -1,37 +1,103 @@
 # process.args
 light-weight command line arguments parser for cli application
 
-## Example
+## Install
 
 ```
-// a.js
-var args = require('./process.args.js')();
+npm install process.args --save-dev
+```
+
+## Usage
+
+```
+var args = require('process.args')([find,alias]);
+```
+
+1) get all commands in command line
+
+```
+// script.js
+var args = require('process.args')();
 console.log(args);
 ```
 
-then run in command line:
+Then run in CLI:
 
 ```
-$ node a.js -d -h --name="home love"
+node script.js -v add --name=new_component --template=./templates/default.tpl
 ```
 
-you will get :
+Then you will get:
 
 ```
 {
-	'a.js' : {
-		d: true,
-		h: true,
-		name: "home love"
+	node: {},
+	'script.js': {
+		v: true
+	},
+	add: {
+		name: 'new_component',
+		template: './templates/default.tpl'
 	}
 }
 ```
+
+2) get a command's parameters by command name
+
+```
+var args = require('process.args')('add');
+console.log(args);
+```
+
+Run the same command, and you will get:
+
+```
+{
+	name: 'new_component',
+	template: './templates/default.tpl'
+}
+```
+
+3) set alias
+
+The second parameter is `alias` which calls full name for shortname. e.g.
+
+```
+var args = require('process.args')({
+	v: 'version',
+	g: 'global'
+});
+```
+
+Then you run:
+
+```
+your -v=1.2.3 -g
+```
+
+`args` will be:
+
+```
+{
+	your: {
+		version: 1.2.3,
+		global: true
+	}
+}
+```
+
+The result dosen't have `v` but has `version`. 
+
+Well, if you give a object for the first param, it will be used as `alias` not `find`. `find` is only used with string.
+
+`alias` will only work on `-` params. `alias` of `--bmk` will not work.
 
 ## Why this CLI appearance?
 
 I have seen many kinds of cli parameters appearance, like:
 
 ```
+(npm install) bower
 -v
 --version
 -name my_name
@@ -40,11 +106,26 @@ I have seen many kinds of cli parameters appearance, like:
 --name=my_name
 ```
 
-In my opinion, `-` stands for short, so what follows `-` should be a shortname, without value, so `-v` is my best choice. `--` means detail, so what follows `--` should be a fullname, could be with value, for example `--version` or `--name=yourname`. With a `=`, it seems so easy to understand.
+A command line in my mind always follow the model: 
+
+```
+{basic command [-options]} {action [-options] [--params]*}+ {---global_options_or_params}*
+# + means repeat once or more
+# * means repeat none or more
+```
+
+For example:
+
+```
+node -v
+npm run test -h --cwd=~/dev/project
+gulp add --name=my_plugin build --name=my_plugin
+gulp add build preview ---name=my_plugin2
+```
 
 This is the reason why I use this appearance.
 
-In process.args:
+In `process.args`:
 
 * `-` short alias: e.g. `-v` `-h` `-g`
 * `--` key=value pairs: e.g. `--name="Nick"` `--host="192.168.0.1"`
@@ -53,7 +134,8 @@ In process.args:
 ```
 gulp build --path="./js" preview -b ---without-feedback go --link="http://www.google.com"
 ```
-Let's look at `---without-feedback`. This means, `build` and `preview` task will both be set `-without-feedback`, go will not be set bcause of position behind.
+
+Let's look at `---without-feedback`. This means, `build` and `preview` task will both be set `without-feedback`, go will not be set bcause of position behind.
 
 If you set a key twice, the value will be a array.
 

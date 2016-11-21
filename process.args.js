@@ -1,5 +1,6 @@
 /**
- * @package process.args
+ * @package: process.args
+ * @version: 0.0.2
  * light-weight command line arguments parser for cli application
  *
  * @author: frustigor
@@ -7,14 +8,18 @@
  */
 
 var fs = require('fs');
-var path = require('path');
 
-module.exports = function processArgs(find) {
-  var args = process.argv.slice(1);
+export default function processArgs(find,alias) {
+  var args = process.argv;
 
   // if there are no parameters
   if(!args || args.length === 0) {
     return;
+  }
+
+  if(typeof find === 'object') {
+    alias = find;
+    find = false;
   }
 
   var parameters = {};
@@ -24,7 +29,7 @@ module.exports = function processArgs(find) {
   args.forEach(function(arg){
     // command
     if(arg.indexOf('-') !== 0) {
-      cmd = fs.existsSync(arg) ? path.basename(arg) : arg;
+      cmd = arg;
       commands.push(cmd);
       parameters[cmd] = {};
     }
@@ -48,10 +53,15 @@ module.exports = function processArgs(find) {
       // 1 dash line
       else {
         arg = arg.substr(1);
+        arg = parserAlias(arg,alias);
         paserTo(obj,arg);
       }
     }
   });
+
+  function paserAlias(str,alias) {
+    return typeof alias === 'object' && alias[str] ? alias[str] : str;
+  }
 
   function paserEach(obj,str,props) {
     props.forEach(function(prop){
@@ -79,7 +89,7 @@ module.exports = function processArgs(find) {
     // cover previous value
     if(cover) {
       obj[key] = value;
-      reutrn;
+      return;
     }
 
     var prev = obj[key];
@@ -95,16 +105,15 @@ module.exports = function processArgs(find) {
   }
 
   if(find) {
-    if(typeof find === 'boolean' && find === true && commands.length > 0) {
-      return parameters[commands[0]];
+    if(typeof find === 'number' && commands.length > find) {
+      return parameters[commands[find]];
     }
-    else if(parameters[find]) {
+    else if(typeof find === 'string' && parameters[find]) {
       return parameters[find];
-    }
-    else {
-      return null;
     }
   }
 
   return parameters;
 }
+
+module.exports = processArgs;
