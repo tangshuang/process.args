@@ -1,6 +1,5 @@
 /**
  * @package: process.args
- * @version: 0.0.2
  * light-weight command line arguments parser for cli application
  *
  * @author: frustigor
