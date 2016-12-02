@@ -1,6 +1,6 @@
 {
   "name": "process.args",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "get parameters from cli",
   "main": "process.args.js",
   "scripts": {

@@ -52,13 +52,13 @@ module.exports = function processArgs(find,alias) {
       // 1 dash line
       else {
         arg = arg.substr(1);
-        arg = parserAlias(arg,alias);
+        arg = parseAlias(arg,alias);
         paserTo(obj,arg);
       }
     }
   });
 
-  function paserAlias(str,alias) {
+  function parseAlias(str,alias) {
     return typeof alias === 'object' && alias[str] ? alias[str] : str;
   }
 
