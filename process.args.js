@@ -52,7 +52,6 @@ module.exports = function processArgs(find,alias) {
       // 1 dash line
       else {
         arg = arg.substr(1);
-        arg = parseAlias(arg,alias);
         paserTo(obj,arg);
       }
     }
@@ -72,6 +71,7 @@ module.exports = function processArgs(find,alias) {
     var pos = str.indexOf("=");
     // with no =
     if(pos === -1) {
+      str = parseAlias(str,alias);
       set(obj,str,true,true);
     }
     // begin with =, do nothing
@@ -80,6 +80,7 @@ module.exports = function processArgs(find,alias) {
     else {
       var key = str.substr(0, pos);
       var value = str.substr(pos + 1);
+      key = parseAlias(key,alias);
       set(obj,key,value);
     }
   }
@@ -114,4 +115,3 @@ module.exports = function processArgs(find,alias) {
 
   return parameters;
 }
-
