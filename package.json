@@ -1,8 +1,8 @@
 {
   "name": "process.args",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "get parameters from cli",
-  "main": "process.args.js",
+  "main": "dist/process.args.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
