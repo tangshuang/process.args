@@ -1,11 +1,8 @@
 {
   "name": "process.args",
-  "version": "0.0.6",
+  "version": "0.1.1",
   "description": "get parameters from cli",
-  "main": "dist/process.args.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tangshuang/process.args.git"
@@ -15,7 +12,7 @@
     "arguments",
     "cli"
   ],
-  "author": "frustigor",
+  "author": "tangshuang",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/tangshuang/process.args/issues"

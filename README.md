@@ -86,7 +86,7 @@ your -v=1.2.3 -g
 }
 ```
 
-The result dosen't have `v` but has `version`. 
+The result dosen't have `v` but has `version`.
 
 Well, if you give a object for the first param, it will be used as `alias` not `find`. `find` is only used with string.
 
@@ -106,7 +106,7 @@ I have seen many kinds of cli parameters appearance, like:
 --name=my_name
 ```
 
-A command line in my mind always follow the model: 
+A command line in my mind always follow the model:
 
 ```
 {basic command [-options]} {action [-options] [--params]*}+ {---global_options_or_params}*

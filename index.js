@@ -1,7 +1,5 @@
-import fs from "fs"
-
 function processArgs(find, alias) {
-	const args = process.argv
+	var args = process.argv
 
 	if(!args || args.length === 0) {
 		return {}
@@ -16,14 +14,14 @@ function processArgs(find, alias) {
 	var commands = []
 	var cmd
 
-	args.forEach(arg => {
+	args.forEach(function(arg) {
 		// command
 		if(arg.indexOf('-') !== 0) {
 			cmd = arg
 			commands.push(cmd)
 			parameters[cmd] = {}
 		}
-		// parameters
+		// parameters exiting
 		else if(cmd && typeof parameters[cmd] === "object") {
 			var obj = parameters[cmd]
 			// more than 4 dash line, no use do nothing
@@ -69,7 +67,18 @@ function processArgs(find, alias) {
 		else {
 			var key = str.substr(0, pos)
 			var value = str.substr(pos + 1)
+
 			key = parseAlias(key, alias)
+
+			// begin and end with "
+			if (value.substr(0, 1) === '"' && value.substr(-1) === '"') {
+				value = substr(1, value.length - 1)
+			}
+			// begin and end with '
+			else if (value.substr(0, 1) === "'" && value.substr(-1) === "'") {
+				value = substr(1, value.length - 1)
+			}
+
 			set(obj, key, value)
 		}
 	}
@@ -84,10 +93,10 @@ function processArgs(find, alias) {
 		var prev = obj[key]
 		if (prev instanceof Array) {
 			prev.push(value)
-		} 
+		}
 		else if ("undefined" !== typeof prev) {
 			obj[key] = [prev, value]
-		} 
+		}
 		else {
 			obj[key] = value
 		}
@@ -105,5 +114,4 @@ function processArgs(find, alias) {
 	return parameters
 }
 
-export default processArgs
 module.exports = processArgs
